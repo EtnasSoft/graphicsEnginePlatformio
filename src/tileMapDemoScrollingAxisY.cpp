@@ -513,17 +513,17 @@ void DrawPlayfield(byte bScrollX, byte bScrollY) {
 
   // ty: current row
   // Incrementa una unidad cada vez que el scroll completa un MODULO en Y
-  ty = bScrollY >> 3;
-  ty1 = bScrollY >> 3;
+  ty = (bScrollY >> 3) + (EDGES / 2);
+  ty1 = (bScrollY >> 3) + (EDGES / 2);
 
   // -----------------------------------------------
 
   byte *d1;
 
   int playFieldLength = PLAYFIELD_ROWS * PLAYFIELD_COLS,
-    nextPlayfieldBit = (ty1 + VIEWPORT_HEIGHT + 1) * PLAYFIELD_COLS,
+    nextPlayfieldBit = (ty1 + VIEWPORT_HEIGHT) * PLAYFIELD_COLS,
     cNextPlayfieldBit = (nextPlayfieldBit % playFieldLength),
-    cNextRow = ((ty1 + VIEWPORT_HEIGHT + 1) % TILEMAP_HEIGHT),
+    cNextRow = ((ty1 + VIEWPORT_HEIGHT) % TILEMAP_HEIGHT),
     cIndex, cIndex2;
 
   d1 = &bPlayfield[cNextPlayfieldBit];
@@ -542,7 +542,7 @@ void DrawPlayfield(byte bScrollX, byte bScrollY) {
       ty -= PLAYFIELD_ROWS;
     }
 
-    tx = bScrollX >> 3;
+    tx = (bScrollX >> 3) + (EDGES / 2);
 
     // Draw the playfield characters at the given scroll position
     d = bTemp;
@@ -555,7 +555,7 @@ void DrawPlayfield(byte bScrollX, byte bScrollY) {
           tx -= PLAYFIELD_COLS; // wrap around
         }
 
-        iOffset = (PLAYFIELD_COLS + tx + ty * PLAYFIELD_COLS) + (EDGES / 2);
+        iOffset = (tx + ty * PLAYFIELD_COLS);
         iOffset2 = (iOffset + PLAYFIELD_COLS); // next line
 
         if (iOffset2 >= (PLAYFIELD_ROWS * PLAYFIELD_COLS)) {    // past bottom
@@ -605,7 +605,7 @@ void DrawPlayfield(byte bScrollX, byte bScrollY) {
           tx -= PLAYFIELD_COLS;
         }
 
-        iOffset = tx + (EDGES / 2) + ((ty + (EDGES / 2)) * PLAYFIELD_COLS);
+        iOffset = tx + (ty * PLAYFIELD_COLS);
         cIndex = iOffset % (PLAYFIELD_ROWS * PLAYFIELD_COLS);
         c = bPlayfield[cIndex];
         s = (byte *)&ucTiles[(c * MODULE) + bXOff];
