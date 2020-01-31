@@ -56,6 +56,8 @@ int level; // Game level - incremented every time you clear the screen
 
 // Prototypes **********************************************
 void gameLoop(void);
+void reloadPlayField();
+void adjustPlayField();
 
 typedef struct tag_gfx_object {
   byte x;
@@ -120,39 +122,39 @@ const byte ucTiles[] PROGMEM = {
     0x8a, 0x00, 0x2a, 0x00, 0x8a, 0x00, 0x2a, 0x00, // Gradient 75-25% (17)
 };
 
-  // TIENE QUE TENER EL MISMO NUM. DE FILAS EXACTAS QUE INDICA EL ARRAY, SI PONE 10, 10 FILAS!
-  const byte tileMap[TILEMAP_HEIGHT][TILEMAP_WIDTH] PROGMEM = {
-    /* 00 */ {0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 01 */ {0,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 02 */ {0,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 03 */ {0,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 04 */ {0,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 05 */ {0,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 06 */ {0,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 07 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 08 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  1,  0},  // -- FLOOR
-    /* 09 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  1,  0},
-    /* 10 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  1,  0},
-    /* 11 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  1,  0},
-    /* 12 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  1,  0},
-    /* 13 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1,  0},
-    /* 14 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0},
+// TIENE QUE TENER EL MISMO NUM. DE FILAS EXACTAS QUE INDICA EL ARRAY, SI PONE 10, 10 FILAS!
+const byte tileMap[TILEMAP_HEIGHT][TILEMAP_WIDTH] PROGMEM = {
+  /* 00 */ {0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 01 */ {0,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 02 */ {0,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 03 */ {0,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 04 */ {0,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 05 */ {0,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 06 */ {0,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 07 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 08 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  1,  0},  // -- FLOOR
+  /* 09 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  1,  0},
+  /* 10 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  1,  0},
+  /* 11 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  1,  0},
+  /* 12 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  1,  0},
+  /* 13 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1,  0},
+  /* 14 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0},
 
-    /* 15 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1,  0},
-    /* 16 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  1,  0},
-    /* 17 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  1,  0},
-    /* 18 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  1,  0},
-    /* 19 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  1,  0}, // ?
-    /* 21 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 22 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 23 */ {0,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 24 */ {0,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 25 */ {0,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 26 */ {0,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 27 */ {0,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 28 */ {0,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
-    /* 29 */ {0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  0},
-  };
+  /* 15 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  1,  0},
+  /* 16 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  1,  0},
+  /* 17 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  1,  0},
+  /* 18 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  1,  0},
+  /* 19 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  1,  0}, // ?
+  /* 21 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 22 */ {0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 23 */ {0,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 24 */ {0,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 25 */ {0,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 26 */ {0,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 27 */ {0,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 28 */ {0,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
+  /* 29 */ {0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  0},
+};
 
 // some globals
 static int iScreenOffset; // current write offset of screen data
@@ -505,7 +507,7 @@ void DrawPlayfield(byte bScrollX, byte bScrollY) {
   byte x, y, tx;
   int ty, ty1, bXOff, bYOff;
   byte c, *s, *sNext, *d;
-  int iOffset, iOffset2;
+  int iOffset, iOffset2, cIndex, cIndex2;
 
   // Solo es cero cuando el scroll completa un MODULO su eje X (8 unidades)
   bXOff = bScrollX & (MODULE - 1);
@@ -516,21 +518,7 @@ void DrawPlayfield(byte bScrollX, byte bScrollY) {
   ty = (bScrollY >> 3) + (EDGES / 2);
   ty1 = (bScrollY >> 3) + (EDGES / 2);
 
-  // -----------------------------------------------
-
-  byte *d1;
-
-  int playFieldLength = PLAYFIELD_ROWS * PLAYFIELD_COLS,
-    nextPlayfieldBit = (ty1 + VIEWPORT_HEIGHT) * PLAYFIELD_COLS,
-    cNextPlayfieldBit = (nextPlayfieldBit % playFieldLength),
-    cNextRow = ((ty1 + VIEWPORT_HEIGHT) % TILEMAP_HEIGHT),
-    cIndex, cIndex2;
-
-  d1 = &bPlayfield[cNextPlayfieldBit];
-
-  for (byte x1 = 0; x1 < PLAYFIELD_COLS; x1++) {
-    memcpy_P(d1 + x1, &tileMap[cNextRow][x1], 1);
-  }
+  adjustPlayField();
 
   // -------------------------------------------------------
 
@@ -664,30 +652,21 @@ void moveBackground() {
 }
 
 void setup() {
-   byte x, y, *d;
-
   delay(50); // wait for the OLED to fully power up
   oledInit(0, 0);
 
   attachInterrupt(0, moveBackground, CHANGE); //INT0, PB2, pin7
 
-  // Storing tyles
-  for (y = 0; y < PLAYFIELD_ROWS; y++) {
-    d = &bPlayfield[y * PLAYFIELD_COLS];
+  iScrollX = 0;
+  iScrollY = 0;
 
-    for (x = 0; x < PLAYFIELD_COLS; x++) {
-      memcpy_P(d++, &tileMap[y][x], 1);
-    }
-  }
+  reloadPlayField();
 
   memset(object_list, 0, sizeof(object_list));
 
   object_list[0].bType = 0x80; // big sprite
   object_list[0].x = 14;
   object_list[0].y = 40;
-
-  iScrollX = 0;
-  iScrollY = 0;
 }
 
 void loop() {
@@ -707,8 +686,13 @@ void loop() {
       iScrollX = (iScrollX >= PLAYFIELD_COLS * MODULE) ? 0 :
         (iScrollX < 0) ? ((PLAYFIELD_COLS * MODULE) - 1) : iScrollX;
 
-      iScrollY = (iScrollY >= 240) ? 0 :
-        (iScrollY < 0) ? ((TILEMAP_HEIGHT * MODULE) - 1) : iScrollY;
+      if (iScrollY >= 240) {
+        iScrollY = 8;
+        reloadPlayField();
+      } else if (iScrollY < 0) {
+        iScrollY = 232;
+        reloadPlayField();
+      }
 
       if (analogRead(EncoderClick) < 940) {
         backgroundReset = 1;
@@ -720,5 +704,42 @@ void loop() {
         backgroundPosX = 0;
         backgroundPosY = 0;
     }
+  }
+}
+
+void reloadPlayField() {
+  byte x, y, *d, bitStart,
+    iStart = iScrollY >> 3;
+
+  for (y = 0; y < PLAYFIELD_ROWS; y++) {
+    bitStart = ((iStart + y) * PLAYFIELD_COLS) % (PLAYFIELD_COLS * PLAYFIELD_ROWS);
+    d = &bPlayfield[bitStart];
+
+    for (x = 0; x < PLAYFIELD_COLS; x++) {
+      memcpy_P(d++, &tileMap[(iStart + y) % TILEMAP_HEIGHT][x], 1);
+    }
+  }
+}
+
+void adjustPlayField() {
+  byte *d1, *d2;
+  byte currentRow = (iScrollY >> 3) + (EDGES / 2);
+
+  int playFieldLength = PLAYFIELD_ROWS * PLAYFIELD_COLS;
+
+  int nextPlayfieldBit = (currentRow + VIEWPORT_HEIGHT) * PLAYFIELD_COLS,
+    cNextPlayfieldBit = nextPlayfieldBit % playFieldLength,
+    cNextRow = (currentRow + VIEWPORT_HEIGHT) % TILEMAP_HEIGHT;
+
+  int prevPlayfieldBit = currentRow * PLAYFIELD_COLS,
+    cPrevPlayfieldBit = prevPlayfieldBit % playFieldLength,
+    cPrevRow = currentRow % TILEMAP_HEIGHT;
+
+  d1 = &bPlayfield[cNextPlayfieldBit];
+  d2 = &bPlayfield[cPrevPlayfieldBit];
+
+  for (byte x1 = 0; x1 < PLAYFIELD_COLS; x1++) {
+    memcpy_P(d1 + x1, &tileMap[cNextRow][x1], 1);
+    memcpy_P(d2 + x1, &tileMap[cPrevRow][x1], 1);
   }
 }
