@@ -2,10 +2,16 @@
 
 #include <Arduino.h>
 #include <avr/interrupt.h>
+//#include <stdio.h>
+//#include <stdbool.h>
+
+#include <string.h> // memset()
 
 #ifdef DEBUG
-#include "ATtinySerialOut.h"
+//#include "ATtinySerialOut.h"
 #endif
+
+typedef uint8_t byte;
 
 // Timming **********************************************
 const int DELAY = 100;
@@ -40,19 +46,21 @@ volatile int a0;
 volatile int c0;
 
 // Player and Game vars **********************************************
-int lives; // Lives in the game - this can go negative
-unsigned int player = 15; // Position of the player in the listObjects
+bool backgroundDirection = 0;
+byte backgroundSpeed = 1;
+byte lives; // Lives in the game - this can go negative
+byte player = 15; // Position of the player in the listObjects
 bool playerAction = 0;    // Captures when the 'click' button is pressed
 
-volatile int playerDirection = 0; // Captures the current direction from the rotary encoder
-volatile int oldPlayerDirection = 0; // Stores the last direction from the rotary encoder
+volatile byte playerDirection = 0; // Captures the current direction from the rotary encoder
+volatile byte oldPlayerDirection = 0; // Stores the last direction from the rotary encoder
 
 volatile int backgroundPosX = 0; // Initial move of x-axis background from rigth to left
 volatile int backgroundPosY = 0; // Initial move of y-axis background from bottom to top
 bool backgroundReset = 0; // Return to default background move
 
-int alienSpeed = 0; // Speed of the aliens moves
-int level; // Game level - incremented every time you clear the screen
+byte alienSpeed = 0; // Speed of the aliens moves
+byte level; // Game level - incremented every time you clear the screen
 
 // Prototypes **********************************************
 void gameLoop(void);
@@ -505,7 +513,7 @@ void DrawSprites(byte y, byte *pBuf, GFX_OBJECT *pList, byte bCount) {
 void DrawPlayfield(byte bScrollX, byte bScrollY) {
   byte bTemp[SCREEN_WIDTH]; // holds data for the current scan line
   byte x, y, tx;
-  int ty, ty1, bXOff, bYOff;
+  int ty, bXOff, bYOff;
   byte c, *s, *sNext, *d;
   int iOffset, iOffset2, cIndex, cIndex2;
 
@@ -513,10 +521,8 @@ void DrawPlayfield(byte bScrollX, byte bScrollY) {
   bXOff = bScrollX & (MODULE - 1);
   bYOff = bScrollY & (MODULE - 1);
 
-  // ty: current row
-  // Incrementa una unidad cada vez que el scroll completa un MODULO en Y
+    // Incrementa una unidad cada vez que el scroll completa un MODULO en Y
   ty = (bScrollY >> 3) + (EDGES / 2);
-  ty1 = (bScrollY >> 3) + (EDGES / 2);
 
   adjustPlayField();
 
@@ -567,7 +573,7 @@ void DrawPlayfield(byte bScrollX, byte bScrollY) {
       }
 
       // partial character left to draw
-      /*if (d != &bTemp[SCREEN_WIDTH]) {
+      if (d != &bTemp[SCREEN_WIDTH]) {
         bXOff = (byte)(&bTemp[SCREEN_WIDTH] - d);
         if (tx >= PLAYFIELD_COLS)
           tx -= PLAYFIELD_COLS;
@@ -580,7 +586,7 @@ void DrawPlayfield(byte bScrollX, byte bScrollY) {
         c = bPlayfield[iOffset2];
         sNext = (byte *)&ucTiles[c * MODULE];
         DrawShiftedChar(s, sNext, d, MODULE - bXOff, bYOff);
-      }*/
+      }
     // simpler case of vertical offset of 0 for each character
     } else {
       //-----------------------------------
@@ -605,7 +611,7 @@ void DrawPlayfield(byte bScrollX, byte bScrollY) {
 
       // partial character left to draw
       // De momento el codigo no pasa por aqui.
-      /*if (d != &bTemp[SCREEN_WIDTH]) {
+      if (d != &bTemp[SCREEN_WIDTH]) {
         bXOff = (byte)(&bTemp[SCREEN_WIDTH] - d);
         if (tx >= PLAYFIELD_COLS) {
           tx -= PLAYFIELD_COLS;
@@ -614,7 +620,7 @@ void DrawPlayfield(byte bScrollX, byte bScrollY) {
         c = bPlayfield[iOffset];
         s = (byte *)&ucTiles[c * MODULE];
         memcpy_P(d, s, bXOff);
-      }*/
+      }
     }
 
     //DrawSprites(y * VIEWPORT_HEIGHT, bTemp, object_list, numberOfSprites);
@@ -629,11 +635,29 @@ void DrawPlayfield(byte bScrollX, byte bScrollY) {
 // Interrupt handler **********************************************
 // Called when encoder value changes
 // Button interrupt, INT0, PB2, pin7
-void moveBackgroundTo(bool toUp) {
-    if (toUp) {
-        iScrollY += 1;
+void moveBackgroundTo(bool increment) {
+    // LINEAL
+    /*if (increment) {
+        backgroundDirection
+          ? iScrollX += backgroundSpeed
+          : iScrollY += backgroundSpeed;
     } else {
-        iScrollY -= 1;
+        backgroundDirection
+          ? iScrollX -= backgroundSpeed
+          : iScrollY -= backgroundSpeed;
+    }*/
+
+    // DIAGONAL
+    if (increment) {
+      iScrollY += backgroundSpeed;
+      iScrollX = backgroundDirection
+         ? iScrollX + backgroundSpeed
+         : iScrollX - backgroundSpeed;
+    } else {
+      iScrollY -= backgroundSpeed;
+      iScrollX = backgroundDirection
+        ? iScrollX - backgroundSpeed
+        : iScrollX + backgroundSpeed;
     }
 }
 
@@ -681,10 +705,13 @@ void loop() {
     // (++speed % 3) => Modulo 3 (33% speed)
     // (++speed & 3) => Modulo 4 (25% speed)
     if ((++speed % 3) == 0) { // Modulo 3 (33% speed)
-      iScrollX = (iScrollX > PLAYFIELD_COLS * MODULE) ? 0 : iScrollX;
-
-      iScrollX = (iScrollX >= PLAYFIELD_COLS * MODULE) ? 0 :
-        (iScrollX < 0) ? ((PLAYFIELD_COLS * MODULE) - 1) : iScrollX;
+      if (iScrollX >= PLAYFIELD_COLS * MODULE) {
+          iScrollX = 0;
+          reloadPlayField();
+      } else if (iScrollX < 0) {
+          iScrollX = (PLAYFIELD_COLS * MODULE) - 1;
+          reloadPlayField();
+      }
 
       if (iScrollY >= 240) {
         iScrollY = 8;
@@ -695,14 +722,8 @@ void loop() {
       }
 
       if (analogRead(EncoderClick) < 940) {
-        backgroundReset = 1;
+        backgroundDirection = !backgroundDirection;
       }
-    }
-
-    if (backgroundReset == 1) {
-        backgroundReset = 0;
-        backgroundPosX = 0;
-        backgroundPosY = 0;
     }
   }
 }

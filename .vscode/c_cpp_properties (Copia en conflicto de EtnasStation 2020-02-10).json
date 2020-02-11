@@ -1,0 +1,73 @@
+{
+    "configurations": [
+        {
+            "name": "!!! WARNING !!! AUTO-GENERATED FILE, PLEASE DO NOT MODIFY IT AND USE https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags"
+        },
+        {
+            "name": "Win32",
+            "includePath": [
+                "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/include",
+                "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/src",
+                "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/lib/ATtinySerialOut",
+                "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/Wire/src",
+                "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/cores/tiny",
+                "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/variants/tinyX5",
+                "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/lib/font6x8AJ",
+                "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/lib/font6x8AJ2",
+                "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/lib/font8x8AJ",
+                "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/lib/serial",
+                "C:/Users/EtnasSoft/.platformio/lib/ArduinoUnit/src",
+                "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/ATTinyCore/src",
+                "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/EEPROM",
+                "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/SPI",
+                "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/Servo/src",
+                "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/Servo_ATTinyCore/src",
+                "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/SoftwareSerial",
+                "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/tinyNeoPixel",
+                "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/tinyNeoPixel_Static",
+                "C:/Users/EtnasSoft/.platformio/packages/tool-unity",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/include",
+                    "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/src",
+                    "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/lib/ATtinySerialOut",
+                    "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/Wire/src",
+                    "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/cores/tiny",
+                    "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/variants/tinyX5",
+                    "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/lib/font6x8AJ",
+                    "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/lib/font6x8AJ2",
+                    "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/lib/font8x8AJ",
+                    "c:/Dropbox/www/ATTiny/Attiny85_Arcade_Keychain/lib/serial",
+                    "C:/Users/EtnasSoft/.platformio/lib/ArduinoUnit/src",
+                    "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/ATTinyCore/src",
+                    "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/EEPROM",
+                    "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/SPI",
+                    "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/Servo/src",
+                    "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/Servo_ATTinyCore/src",
+                    "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/SoftwareSerial",
+                    "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/tinyNeoPixel",
+                    "C:/Users/EtnasSoft/.platformio/packages/framework-arduino-avr-attiny/libraries/tinyNeoPixel_Static",
+                    "C:/Users/EtnasSoft/.platformio/packages/tool-unity",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=40100",
+                "ARDUINO_AVR_ATTINYX5",
+                "F_CPU=8000000L",
+                "ARDUINO_ARCH_AVR",
+                "ARDUINO=10808",
+                "__AVR_ATtiny85__",
+                ""
+            ],
+            "intelliSenseMode": "clang-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "compilerPath": "\"C:/Users/EtnasSoft/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe\" -mmcu=attiny85"
+        }
+    ],
+    "version": 4
+}
